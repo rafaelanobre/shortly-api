@@ -43,3 +43,19 @@ export async function openUrl(req,res){
         res.status(500).send(err);
     }
 }
+
+export async function deleteUrl(req,res){
+    const {id} = req.params;
+    try{
+        const url = await db.query(`SELECT * FROM urls WHERE id=$1`, [id]);
+
+        if (url.rowCount === 0) return res.status(404).send({message:'Impossível excluir, link não encontrado.'});
+
+        if (url.rows[0].userId !== req.userId) return res.status(401).send({message:'Impossível excluir, link vinculado a outro usuário.'});
+
+        const deleteUrl = await db.query(`DELETE FROM urls WHERE id=$1`, [id]);
+        return res.sendStatus(204);
+    }catch(err){
+        res.status(500).send(err);
+    }
+}

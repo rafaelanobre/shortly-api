@@ -62,7 +62,8 @@ CREATE TABLE public.users (
     id integer NOT NULL,
     name text NOT NULL,
     email text NOT NULL,
-    password text NOT NULL
+    password text NOT NULL,
+    "createdAt" timestamp without time zone DEFAULT now() NOT NULL
 );
 
 
@@ -123,7 +124,8 @@ INSERT INTO public.urls VALUES (2, 1, 'LcGeYuSRjMUJN', 'https://github.com/ai/na
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: -
 --
 
-INSERT INTO public.users VALUES (1, 'João', 'joao@driven.com.br', '$2b$10$7u94nPpBQv.mXcl9sGRKvOviGpPFg/PIS1vqDwH0UQc9oui8naelO');
+INSERT INTO public.users VALUES (1, 'João', 'joao@driven.com.br', '$2b$10$7u94nPpBQv.mXcl9sGRKvOviGpPFg/PIS1vqDwH0UQc9oui8naelO', '2023-08-06 20:48:21.464759');
+INSERT INTO public.users VALUES (2, 'João Silva', 'joao@example.com', '$2b$10$WgFW2WnZC5oJKvnP4XlvMOUB1./eIWYV.QPgL8ZNQmgtA0RCC3Ywy', '2023-08-06 20:50:14.232105');
 
 
 --
@@ -137,7 +139,7 @@ SELECT pg_catalog.setval('public.urls_id_seq', 14, true);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
 --
 
-SELECT pg_catalog.setval('public.users_id_seq', 1, true);
+SELECT pg_catalog.setval('public.users_id_seq', 2, true);
 
 
 --
