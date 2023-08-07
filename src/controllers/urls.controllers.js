@@ -59,3 +59,58 @@ export async function deleteUrl(req,res){
         res.status(500).send(err);
     }
 }
+
+export async function listUserUrls (req,res){
+    try{
+        const { rows: [userData]} = await db.query(`
+        SELECT
+            u.id AS id,
+            u.name AS name,
+            COALESCE(SUM(url."visitCount"), 0) AS visitCount,
+            json_agg(
+                json_build_object(
+                    'id', url.id,
+                    'shortUrl', url."shortUrl",
+                    'url', url.url,
+                    'visitCount', url."visitCount"
+                )
+            ) AS shortenedUrls
+        FROM users u
+        LEFT JOIN urls url ON u.id = url."userId"
+        WHERE u.id=$1
+        GROUP BY u.id
+        ORDER BY u.id;
+        `, [req.userId]);
+
+        if (!userData) return res.status(404).send({ message: "Não foi possível encontrar dados desse usuário."});
+
+        res.status(200).send(userData);
+    }catch(err){
+        res.status(500).send(err);
+    }
+}
+
+export async function usersRanking(req,res){
+    try{
+        const { rows: rankingData } = await db.query(`
+        SELECT
+            u.id AS id,
+            u.name AS name,
+            COUNT(url."id") AS linksCount,
+            COALESCE(SUM(url."visitCount"), 0) AS visitCount
+        FROM
+            users u
+        LEFT JOIN
+            urls url ON u.id = url."userId"
+        GROUP BY
+            u.id
+        ORDER BY
+            visitCount DESC
+        LIMIT 10;
+        `);
+
+        res.status(200).send(rankingData);
+    }catch(err){
+        res.status(500).send(err);
+    }
+}
