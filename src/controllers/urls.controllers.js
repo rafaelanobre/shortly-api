@@ -105,7 +105,7 @@ export async function usersRanking(req,res){
         GROUP BY
             u.id
         ORDER BY
-            visitCount DESC
+            "visitCount" DESC
         LIMIT 10;
         `);
 
