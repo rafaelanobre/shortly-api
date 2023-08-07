@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { insertNewShortUrl, selectUrlById, updateUrlCount} from "../repositories/urls.repository.js";
+import { insertNewShortUrl, selectRanking, selectUrlById, selectUserUrls, updateUrlCount} from "../repositories/urls.repository.js";
 
 export async function shortenUrl(req,res){
     const {url} = req.body;
@@ -48,7 +48,7 @@ export async function deleteUrl(req,res){
 
 export async function listUserUrls (req,res){
     try{
-        const { rows: [userData]} = await selectUrlById(req.userId);
+        const { rows: [userData]} = await selectUserUrls(req.userId);
         if (!userData) return res.status(404).send({ message: "Não foi possível encontrar dados desse usuário."});
         res.status(200).send(userData);
     }catch(err){
@@ -58,7 +58,7 @@ export async function listUserUrls (req,res){
 
 export async function usersRanking(req,res){
     try{
-        const { rows: rankingData } = await selectUrlById();
+        const { rows: rankingData } = await selectRanking();
         res.status(200).send(rankingData);
     }catch(err){
         res.status(500).send(err);
