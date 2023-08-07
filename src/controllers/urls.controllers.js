@@ -74,7 +74,7 @@ export async function listUserUrls (req,res){
                     'url', url.url,
                     'visitCount', url."visitCount"
                 )
-            ) AS shortenedUrls
+            ) AS "shortenedUrls"
         FROM users u
         LEFT JOIN urls url ON u.id = url."userId"
         WHERE u.id=$1
@@ -96,7 +96,7 @@ export async function usersRanking(req,res){
         SELECT
             u.id AS id,
             u.name AS name,
-            COUNT(url."id") AS linksCount,
+            COUNT(url."id") AS "linksCount",
             COALESCE(SUM(url."visitCount"), 0) AS "visitCount"
         FROM
             users u
