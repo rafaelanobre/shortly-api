@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid";
-import { insertNewShortUrl, selectRanking, selectUrlById, selectUserUrls, updateUrlCount} from "../repositories/urls.repository.js";
+import { insertNewShortUrl, selectRanking, selectUrlById, selectUserUrls, updateUrlCount, deleteUrlDB, selectAllUrlById} from "../repositories/urls.repository.js";
 
 export async function shortenUrl(req,res){
     const {url} = req.body;
@@ -37,11 +37,13 @@ export async function openUrl(req,res){
 export async function deleteUrl(req,res){
     const {id} = req.params;
     try{
-        const { rows: [url] } = await deleteUrl(id, req.userId);
-        if (!url) return res.status(404).send({ message: 'Impossível excluir, link não encontrado.' });
+        const url = await selectAllUrlById(id);
+        if (url.rowCount === 0) return res.status(404).send({message:'Impossível excluir, link não encontrado.'});
+        if (url.rows[0].userId !== req.userId) return res.status(401).send({message:'Impossível excluir, link vinculado a outro usuário.'});
+
+        await deleteUrlDB(id);
         return res.sendStatus(204);
     }catch(err){
-        if (err.code === '23503') return res.status(401).send({ message: 'Impossível excluir, link vinculado a outro usuário.' });
         res.status(500).send(err);
     }
 }

@@ -26,12 +26,12 @@ export async function updateUrlCount(shortUrl){
     `, [shortUrl]);
 }
 
-export async function deleteUrl(id, userId){
-    return db.query(`
-        DELETE FROM urls
-        WHERE id = $1 AND "userId" = $2
-        RETURNING *
-    `, [id, req.userId]);
+export async function selectAllUrlById(id){
+    return db.query(`SELECT * FROM urls WHERE id=$1`, [id]);
+}
+
+export async function deleteUrlDB(id){
+    db.query(`DELETE FROM urls WHERE id=$1`, [id]);
 }
 
 export async function selectUserUrls(userId){
