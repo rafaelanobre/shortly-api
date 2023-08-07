@@ -7,7 +7,7 @@ export default function validateToken(req,res,next){
     if(!token) res.status(401).send('O token não foi enviado corretamente.');
 
     Jwt.verify(token,
-        process.env.SECRET_JWT,
+        process.env.SECRET_JWT  || "chaveSecreta",
         (error,decoded) =>{
             if(error){
                 return res.status(401).send('Token inválido.');

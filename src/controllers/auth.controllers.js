@@ -14,7 +14,7 @@ export async function signIn(req,res){
         const passwordCorrect = bcrypt.compareSync(password, user.password);
         if (!passwordCorrect) return res.status(401).send({message:"Senha incorreta"});
 
-        const token = ((id) => Jwt.sign({ id: id }, process.env.SECRET_JWT, { expiresIn: 86400 }))(user.id);
+        const token = ((id) => Jwt.sign({ id: id }, process.env.SECRET_JWT || "chaveSecreta", { expiresIn: 86400 }))(user.id);
 
         res.status(200).send({token: token});
 
